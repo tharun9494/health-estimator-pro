@@ -1,7 +1,8 @@
-import { coreFeatures, addonFeatures, extraFeatures } from "@/data/features";
+import { FeatureSection } from "@/data/categories";
 import FeatureCard from "./FeatureCard";
 
 interface FeaturePanelProps {
+  sections: FeatureSection[];
   selected: Set<string>;
   onToggle: (id: string) => void;
 }
@@ -13,23 +14,15 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
   </div>
 );
 
-const FeaturePanel = ({ selected, onToggle }: FeaturePanelProps) => (
+const FeaturePanel = ({ sections, selected, onToggle }: FeaturePanelProps) => (
   <div>
-    <Section title="🏥 Core Modules">
-      {coreFeatures.map((f) => (
-        <FeatureCard key={f.id} feature={f} selected={selected.has(f.id)} onToggle={onToggle} />
-      ))}
-    </Section>
-    <Section title="➕ Optional Add-Ons">
-      {addonFeatures.map((f) => (
-        <FeatureCard key={f.id} feature={f} selected={selected.has(f.id)} onToggle={onToggle} />
-      ))}
-    </Section>
-    <Section title="⚙️ Extra Features">
-      {extraFeatures.map((f) => (
-        <FeatureCard key={f.id} feature={f} selected={selected.has(f.id)} onToggle={onToggle} />
-      ))}
-    </Section>
+    {sections.map((section) => (
+      <Section key={section.title} title={section.title}>
+        {section.features.map((f) => (
+          <FeatureCard key={f.id} feature={f} selected={selected.has(f.id)} onToggle={onToggle} />
+        ))}
+      </Section>
+    ))}
   </div>
 );
 

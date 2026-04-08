@@ -1,15 +1,16 @@
-import { allFeatures } from "@/data/features";
+import { Feature } from "@/data/categories";
 import { Progress } from "@/components/ui/progress";
 import { TrendingUp, Clock, Shield, IndianRupee } from "lucide-react";
 
 interface PriceCalculatorProps {
   selected: Set<string>;
   margin: number;
+  allFeatures: Feature[];
 }
 
 const fmt = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 
-const PriceCalculator = ({ selected, margin }: PriceCalculatorProps) => {
+const PriceCalculator = ({ selected, margin, allFeatures }: PriceCalculatorProps) => {
   const items = allFeatures.filter((f) => selected.has(f.id));
   const minBase = items.reduce((s, f) => s + f.minPrice, 0);
   const maxBase = items.reduce((s, f) => s + f.maxPrice, 0);
@@ -23,7 +24,6 @@ const PriceCalculator = ({ selected, margin }: PriceCalculatorProps) => {
 
   return (
     <div className="space-y-5">
-      {/* Complexity */}
       <div className="bg-card rounded-xl border border-border p-5 shadow-card">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Project Complexity</span>
@@ -33,7 +33,6 @@ const PriceCalculator = ({ selected, margin }: PriceCalculatorProps) => {
         <p className="text-xs text-muted-foreground mt-2">{items.length} of {allFeatures.length} features selected</p>
       </div>
 
-      {/* Base Cost */}
       <div className="bg-card rounded-xl border border-border p-5 shadow-card space-y-3">
         <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           <IndianRupee className="w-3.5 h-3.5" /> Base Cost
@@ -55,7 +54,6 @@ const PriceCalculator = ({ selected, margin }: PriceCalculatorProps) => {
         )}
       </div>
 
-      {/* Margin */}
       {items.length > 0 && (
         <div className="bg-warning/5 rounded-xl border border-warning/20 p-5 space-y-1">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-warning">
@@ -66,7 +64,6 @@ const PriceCalculator = ({ selected, margin }: PriceCalculatorProps) => {
         </div>
       )}
 
-      {/* Total */}
       {items.length > 0 && (
         <div className="gradient-primary rounded-xl p-5 text-primary-foreground space-y-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80">

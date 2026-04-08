@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Feature } from "@/data/categories";
 import { ClientInfo } from "./ClientForm";
-import { FileText, MessageCircle } from "lucide-react";
-
+import { FileText, MessageCircle, Download } from "lucide-react";
+import { generateQuotePdf } from "@/lib/generatePdf";
 interface QuoteActionsProps {
   selected: Set<string>;
   margin: number;
@@ -48,9 +48,16 @@ const QuoteActions = ({ selected, margin, client, categoryName, allFeatures }: Q
     navigator.clipboard.writeText(text);
   };
 
+  const handlePdf = () => {
+    generateQuotePdf(selected, margin, client, categoryName, allFeatures);
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      <Button onClick={handleCopy} disabled={items.length === 0} className="w-full gradient-primary text-primary-foreground shadow-primary hover:opacity-90">
+      <Button onClick={handlePdf} disabled={items.length === 0} className="w-full bg-primary text-primary-foreground shadow-primary hover:opacity-90">
+        <Download className="w-4 h-4 mr-2" /> Download PDF Quote
+      </Button>
+      <Button onClick={handleCopy} disabled={items.length === 0} variant="outline" className="w-full">
         <FileText className="w-4 h-4 mr-2" /> Copy Quote Summary
       </Button>
       <Button onClick={handleWhatsApp} disabled={items.length === 0} variant="outline" className="w-full border-success text-success hover:bg-success/5">

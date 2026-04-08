@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Feature } from "@/data/categories";
 import { ClientInfo } from "./ClientForm";
-import { FileText, MessageCircle } from "lucide-react";
-
+import { FileText, MessageCircle, Download } from "lucide-react";
+import { generateQuotePdf } from "@/lib/generatePdf";
 interface QuoteActionsProps {
   selected: Set<string>;
   margin: number;

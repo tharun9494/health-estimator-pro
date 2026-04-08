@@ -1,4 +1,4 @@
-import { Feature } from "@/data/features";
+import { Feature } from "@/data/categories";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 

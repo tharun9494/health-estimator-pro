@@ -8,9 +8,12 @@ interface FeaturePanelProps {
 }
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="mb-6">
-    <h2 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{title}</h2>
-    <div className="grid gap-2">{children}</div>
+  <div className="mb-8">
+    <h2 className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/60 mb-4">
+      <span className="w-2 h-2 rounded-full bg-[#C9A227]" />
+      {title}
+    </h2>
+    <div className="grid gap-3">{children}</div>
   </div>
 );
 

@@ -69,41 +69,53 @@ const Estimator = () => {
   const allFeats = getAllFeatures(category);
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="gradient-hero py-6 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <button onClick={() => navigate("/")} className="flex items-center gap-1.5 text-primary-foreground/60 hover:text-primary-foreground text-xs font-medium mb-3 transition-colors">
-            <ArrowLeft className="w-3.5 h-3.5" /> All Categories
-          </button>
-          <div className="flex items-center gap-3">
-            <span className="text-3xl">{category.icon}</span>
-            <div>
-              <h1 className="text-xl md:text-2xl font-extrabold text-primary-foreground tracking-tight">
-                {category.name}
-              </h1>
-              <p className="text-primary-foreground/60 text-xs md:text-sm">{category.description}</p>
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
+      {/* Fixed Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b-2 border-[#C9A227]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate("/")} className="flex items-center gap-1.5 text-white/60 hover:text-[#C9A227] text-xs transition-colors">
+                <ArrowLeft className="w-4 h-4" /> Home
+              </button>
+              <div className="h-6 w-px bg-white/20" />
+              <img 
+                src="https://fore-fight-era.vercel.app/assets/3-Bsr_pCU3.png" 
+                alt="Fore Fight Era" 
+                className="h-8 w-auto object-contain"
+              />
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{category.icon}</span>
+              <h1 className="text-lg font-bold text-white">{category.name}</h1>
             </div>
           </div>
         </div>
       </header>
+      
+      {/* Category Title Section */}
+      <div className="pt-20 pb-6 px-4 md:px-8 bg-gradient-to-r from-gray-900 to-black border-b border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <p className="text-white/50 text-sm">{category.description}</p>
+        </div>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
+      <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
         <div className="grid lg:grid-cols-[1fr_380px] gap-8">
           <div>
             <FeaturePanel sections={category.sections} selected={selected} onToggle={handleToggle} />
           </div>
 
           <div className="order-first lg:order-last">
-            <div className="lg:sticky lg:top-6 space-y-5">
+            <div className="lg:sticky lg:top-24 space-y-5">
               <PriceCalculator selected={selected} margin={margin} allFeatures={allFeats} />
 
-              <div className="bg-card rounded-xl border border-border p-5 shadow-card space-y-3">
+              <div className="bg-white/5 rounded-xl border border-white/10 p-5 space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Safety Margin</span>
-                  <span className="text-sm font-bold text-primary">{margin}%</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-white/60">Safety Margin</span>
+                  <span className="text-sm font-bold text-[#C9A227]">{margin}%</span>
                 </div>
-                <Slider value={[margin]} onValueChange={([v]) => setMargin(v)} min={10} max={25} step={1} />
+                <Slider value={[margin]} onValueChange={([v]) => setMargin(v)} min={10} max={25} step={1} className="[&_[role=slider]]:bg-[#C9A227] [&_[role=slider]]:border-[#C9A227] [&_.bg-primary]:bg-[#C9A227]" />
               </div>
 
               <ClientForm info={client} onChange={setClient} />

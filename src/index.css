@@ -6,33 +6,36 @@
 
 @layer base {
   :root {
-    --background: 210 33% 98%;
-    --foreground: 215 28% 17%;
+    /* Fore Fight Era Dark Theme - Black & Gold */
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 215 28% 17%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 215 28% 17%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 211 84% 45%;
-    --primary-foreground: 0 0% 100%;
+    /* Gold Primary #C9A227 */
+    --primary: 45 70% 47%;
+    --primary-foreground: 0 0% 0%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 215 28% 17%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 33% 95%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --accent: 196 80% 45%;
-    --accent-foreground: 0 0% 100%;
+    /* Gold Accent */
+    --accent: 45 70% 47%;
+    --accent-foreground: 0 0% 0%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 20% 90%;
-    --input: 214 20% 90%;
-    --ring: 211 84% 45%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 45 70% 47%;
 
     --radius: 0.75rem;
 
@@ -41,20 +44,21 @@
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --gradient-primary: linear-gradient(135deg, hsl(211 84% 45%), hsl(196 80% 45%));
-    --gradient-hero: linear-gradient(135deg, hsl(215 28% 17%), hsl(211 84% 35%));
-    --shadow-card: 0 1px 3px hsl(211 84% 45% / 0.06), 0 4px 12px hsl(211 84% 45% / 0.04);
-    --shadow-card-hover: 0 4px 16px hsl(211 84% 45% / 0.12), 0 8px 24px hsl(211 84% 45% / 0.06);
-    --shadow-primary: 0 4px 14px hsl(211 84% 45% / 0.35);
+    /* Fore Fight Era Gradients */
+    --gradient-primary: linear-gradient(135deg, #C9A227, #B8921F);
+    --gradient-hero: linear-gradient(135deg, #000000, #1a1a1a);
+    --shadow-card: 0 1px 3px rgba(201, 162, 39, 0.1), 0 4px 12px rgba(0, 0, 0, 0.3);
+    --shadow-card-hover: 0 4px 16px rgba(201, 162, 39, 0.15), 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-primary: 0 4px 14px rgba(201, 162, 39, 0.4);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 45 70% 47%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 45 70% 47%;
   }
 }
 
@@ -65,6 +69,28 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+  
+  /* Scrollbar Styling */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1a1a1a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #C9A227;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #B8921F;
+  }
+  
+  /* Selection Color */
+  ::selection {
+    background: rgba(201, 162, 39, 0.3);
+    color: white;
   }
 }
 
@@ -83,5 +109,31 @@
   }
   .shadow-primary {
     box-shadow: var(--shadow-primary);
+  }
+  
+  /* Fore Fight Era Utilities */
+  .text-gold {
+    color: #C9A227;
+  }
+  .bg-gold {
+    background-color: #C9A227;
+  }
+  .border-gold {
+    border-color: #C9A227;
+  }
+  .hover-gold:hover {
+    background-color: #B8921F;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Gold Glow Effect */
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(201, 162, 39, 0.3);
   }
 }

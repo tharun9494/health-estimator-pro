@@ -53,14 +53,28 @@ const QuoteActions = ({ selected, margin, client, categoryName, allFeatures }: Q
   };
 
   return (
-    <div className="flex flex-col gap-2">
-      <Button onClick={handlePdf} disabled={items.length === 0} className="w-full bg-primary text-primary-foreground shadow-primary hover:opacity-90">
+    <div className="flex flex-col gap-3">
+      <Button 
+        onClick={handlePdf} 
+        disabled={items.length === 0} 
+        className="w-full bg-[#C9A227] text-black font-semibold hover:bg-[#B8921F] shadow-[0_4px_14px_rgba(201,162,39,0.4)]"
+      >
         <Download className="w-4 h-4 mr-2" /> Download PDF Quote
       </Button>
-      <Button onClick={handleCopy} disabled={items.length === 0} variant="outline" className="w-full">
+      <Button 
+        onClick={handleCopy} 
+        disabled={items.length === 0} 
+        variant="outline" 
+        className="w-full border-white/20 text-white hover:bg-white/10 hover:text-white"
+      >
         <FileText className="w-4 h-4 mr-2" /> Copy Quote Summary
       </Button>
-      <Button onClick={handleWhatsApp} disabled={items.length === 0} variant="outline" className="w-full border-success text-success hover:bg-success/5">
+      <Button 
+        onClick={handleWhatsApp} 
+        disabled={items.length === 0} 
+        variant="outline" 
+        className="w-full border-green-500/50 text-green-400 hover:bg-green-500/10 hover:text-green-400"
+      >
         <MessageCircle className="w-4 h-4 mr-2" /> Share via WhatsApp
       </Button>
     </div>

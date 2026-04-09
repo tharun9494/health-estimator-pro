@@ -24,65 +24,69 @@ const PriceCalculator = ({ selected, margin, allFeatures }: PriceCalculatorProps
 
   return (
     <div className="space-y-5">
-      <div className="bg-card rounded-xl border border-border p-5 shadow-card">
+      {/* Complexity Card */}
+      <div className="bg-white/5 rounded-xl border border-white/10 p-5">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Project Complexity</span>
-          <span className="text-sm font-bold text-primary">{complexity}%</span>
+          <span className="text-xs font-semibold uppercase tracking-widest text-white/60">Project Complexity</span>
+          <span className="text-sm font-bold text-[#C9A227]">{complexity}%</span>
         </div>
-        <Progress value={complexity} className="h-2" />
-        <p className="text-xs text-muted-foreground mt-2">{items.length} of {allFeatures.length} features selected</p>
+        <Progress value={complexity} className="h-2 bg-white/10 [&>div]:bg-[#C9A227]" />
+        <p className="text-xs text-white/40 mt-2">{items.length} of {allFeatures.length} features selected</p>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-5 shadow-card space-y-3">
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          <IndianRupee className="w-3.5 h-3.5" /> Base Cost
+      {/* Base Cost Card */}
+      <div className="bg-white/5 rounded-xl border border-white/10 p-5 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-white/60">
+          <IndianRupee className="w-3.5 h-3.5 text-[#C9A227]" /> Base Cost
         </div>
         {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Select features to see pricing</p>
+          <p className="text-sm text-white/40">Select features to see pricing</p>
         ) : (
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-xs text-muted-foreground">Minimum</p>
-              <p className="text-xl font-bold text-foreground">{fmt(minBase)}</p>
+              <p className="text-xs text-white/50">Minimum</p>
+              <p className="text-xl font-bold text-white">{fmt(minBase)}</p>
             </div>
-            <span className="text-muted-foreground font-medium">–</span>
+            <span className="text-white/40 font-medium">–</span>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground">Maximum</p>
-              <p className="text-xl font-bold text-foreground">{fmt(maxBase)}</p>
+              <p className="text-xs text-white/50">Maximum</p>
+              <p className="text-xl font-bold text-white">{fmt(maxBase)}</p>
             </div>
           </div>
         )}
       </div>
 
+      {/* Safety Margin Card */}
       {items.length > 0 && (
-        <div className="bg-warning/5 rounded-xl border border-warning/20 p-5 space-y-1">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-warning">
+        <div className="bg-[#C9A227]/10 rounded-xl border border-[#C9A227]/30 p-5 space-y-1">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#C9A227]">
             <Shield className="w-3.5 h-3.5" /> Safety Margin ({margin}%)
           </div>
-          <p className="text-xs text-muted-foreground">For changes, revisions & risk buffer</p>
-          <p className="text-sm font-semibold text-foreground">{fmt(minMargin)} – {fmt(maxMargin)}</p>
+          <p className="text-xs text-white/50">For changes, revisions & risk buffer</p>
+          <p className="text-sm font-semibold text-white">{fmt(minMargin)} – {fmt(maxMargin)}</p>
         </div>
       )}
 
+      {/* Total Estimate Card - Gold */}
       {items.length > 0 && (
-        <div className="gradient-primary rounded-xl p-5 text-primary-foreground space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80">
+        <div className="bg-[#C9A227] rounded-xl p-5 text-black space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-black/70">
             <TrendingUp className="w-3.5 h-3.5" /> Estimated Total
           </div>
           <div className="flex justify-between items-end">
             <div>
-              <p className="text-xs opacity-70">Min</p>
-              <p className="text-2xl font-extrabold">{fmt(minTotal)}</p>
+              <p className="text-xs text-black/60">Min</p>
+              <p className="text-2xl font-extrabold text-black">{fmt(minTotal)}</p>
             </div>
-            <span className="opacity-50 font-bold text-lg">–</span>
+            <span className="text-black/40 font-bold text-lg">–</span>
             <div className="text-right">
-              <p className="text-xs opacity-70">Max</p>
-              <p className="text-2xl font-extrabold">{fmt(maxTotal)}</p>
+              <p className="text-xs text-black/60">Max</p>
+              <p className="text-2xl font-extrabold text-black">{fmt(maxTotal)}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 pt-1 border-t border-primary-foreground/20">
-            <Clock className="w-3.5 h-3.5 opacity-70" />
-            <span className="text-sm font-medium opacity-80">Timeline: {days}–{days + 10} days</span>
+          <div className="flex items-center gap-2 pt-2 border-t border-black/20">
+            <Clock className="w-3.5 h-3.5 text-black/60" />
+            <span className="text-sm font-medium text-black/80">Timeline: {days}–{days + 10} days</span>
           </div>
         </div>
       )}

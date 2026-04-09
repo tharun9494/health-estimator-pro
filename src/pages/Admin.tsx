@@ -299,18 +299,28 @@ const Admin = () => {
 
   const handleSaveBulkFeatures = async () => {
     if (!bulkCategory) return;
-    
-    // Validate: all features must have id and name
-    const invalid = bulkFeatures.filter(f => !f.id.trim() || !f.name.trim());
+
+    // Validate: all features must have name
+    const invalid = bulkFeatures.filter(f => !f.name.trim());
     if (invalid.length > 0) {
-      toast.error("All features must have an ID and Module Name");
+      toast.error("All features must have a Module Name");
       return;
     }
 
     try {
       setLoading(true);
       for (const feature of bulkFeatures) {
-        await addFeature(bulkCategory.id, feature);
+        // Auto-generate ID from name if not provided
+        const generatedId = feature.id.trim() || feature.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+        const featureToSave = {
+          ...feature,
+          id: generatedId,
+          totalCost: feature.totalCost || feature.price,
+          days: feature.days || 1,
+          icon: feature.icon || "📦",
+          category: feature.category || "core",
+        };
+        await addFeature(bulkCategory.id, featureToSave);
       }
       toast.success(`${bulkFeatures.length} features added successfully!`);
       setIsBulkMode(false);
@@ -437,78 +447,87 @@ const Admin = () => {
     const totalDuration = bulkFeatures.reduce((sum, f) => sum + (f.days || 0), 0);
 
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
         {/* Header */}
-        <header className="gradient-hero py-6 px-4 md:px-8">
-          <div className="max-w-4xl mx-auto">
-            <button
-              onClick={() => setIsBulkMode(false)}
-              className="flex items-center gap-1.5 text-primary-foreground/60 hover:text-primary-foreground text-xs font-medium mb-3 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin
-            </button>
+        <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b-2 border-[#C9A227]">
+          <div className="max-w-4xl mx-auto px-4 md:px-8 py-3">
             <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-xl md:text-2xl font-extrabold text-primary-foreground tracking-tight">
-                  Add Features: {bulkCategory.name}
-                </h1>
-                <p className="text-primary-foreground/60 text-xs md:text-sm">
-                  Add multiple features with price calculation
-                </p>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setIsBulkMode(false)}
+                  className="flex items-center gap-1.5 text-white/60 hover:text-[#C9A227] text-xs transition-colors"
+                >
+                  <ArrowLeft className="w-4 h-4" /> Admin
+                </button>
+                <div className="h-6 w-px bg-white/20" />
+                <img 
+                  src="https://fore-fight-era.vercel.app/assets/3-Bsr_pCU3.png" 
+                  alt="Fore Fight Era" 
+                  className="h-8 w-auto object-contain"
+                />
               </div>
               <Button
                 onClick={handleSaveBulkFeatures}
                 disabled={bulkFeatures.length === 0}
-                className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                className="bg-[#C9A227] text-black hover:bg-[#B8921F] font-semibold text-sm"
+                size="sm"
               >
-                <Save className="w-4 h-4 mr-2" /> Save All
+                <Save className="w-4 h-4 mr-1.5" /> Save All
               </Button>
             </div>
           </div>
         </header>
 
-        <main className="max-w-4xl mx-auto px-4 md:px-8 py-6">
+        <main className="pt-20 pb-12 px-4 md:px-8 max-w-4xl mx-auto">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-white mb-1">Add Features: {bulkCategory.name}</h1>
+            <p className="text-white/50 text-sm">Add multiple features with automatic price calculation</p>
+          </div>
+
           {/* Feature Rows */}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {bulkFeatures.length === 0 && (
-              <div className="text-center py-12 bg-muted rounded-lg">
-                <p className="text-muted-foreground mb-4">No features added yet</p>
+              <div className="text-center py-16 bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 border-dashed">
+                <div className="w-12 h-12 bg-[#C9A227]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Plus className="w-6 h-6 text-[#C9A227]" />
+                </div>
+                <p className="text-white/50 mb-4">Click below to add your first feature</p>
               </div>
             )}
 
             {bulkFeatures.map((feature, index) => (
-              <Card key={index} className="relative">
+              <Card key={index} className="bg-gradient-to-br from-white/10 to-white/5 border-white/10">
                 <CardContent className="p-4">
-                  <div className="grid md:grid-cols-12 gap-4 items-end">
+                  <div className="grid md:grid-cols-12 gap-3 items-end">
                     {/* Module Name */}
                     <div className="md:col-span-4">
-                      <Label className="text-xs font-semibold mb-1.5 block">
-                        {index + 1}. Module Name *
+                      <Label className="text-xs font-medium text-white/70 mb-1.5 block">
+                        {index + 1}. Module Name <span className="text-[#C9A227]">*</span>
                       </Label>
                       <Input
                         value={feature.name}
                         onChange={(e) => updateBulkFeature(index, "name", e.target.value)}
                         placeholder="e.g., Appointment Booking"
-                        className="h-10"
+                        className="h-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#C9A227]/50"
                       />
                     </div>
 
                     {/* Description */}
                     <div className="md:col-span-5">
-                      <Label className="text-xs font-semibold mb-1.5 block">
+                      <Label className="text-xs font-medium text-white/70 mb-1.5 block">
                         Description
                       </Label>
                       <Input
                         value={feature.description}
                         onChange={(e) => updateBulkFeature(index, "description", e.target.value)}
                         placeholder="Feature description"
-                        className="h-10"
+                        className="h-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#C9A227]/50"
                       />
                     </div>
 
                     {/* Price */}
                     <div className="md:col-span-2">
-                      <Label className="text-xs font-semibold mb-1.5 block">
+                      <Label className="text-xs font-medium text-white/70 mb-1.5 block">
                         Price (₹)
                       </Label>
                       <Input
@@ -516,7 +535,7 @@ const Admin = () => {
                         value={feature.price}
                         onChange={(e) => updateBulkFeature(index, "price", parseInt(e.target.value) || 0)}
                         placeholder="0"
-                        className="h-10"
+                        className="h-10 bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:border-[#C9A227]/50"
                       />
                     </div>
 
@@ -526,14 +545,14 @@ const Admin = () => {
                         size="icon"
                         variant="ghost"
                         onClick={() => removeBulkFeatureRow(index)}
-                        className="h-10 w-10 text-destructive hover:bg-destructive/10"
+                        className="h-10 w-10 text-white/40 hover:text-red-400 hover:bg-red-500/10"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
 
-                  {/* Hidden fields for compatibility */}
+                  {/* Hidden fields */}
                   <input type="hidden" value={feature.id} />
                   <input type="hidden" value={feature.totalCost} />
                   <input type="hidden" value={feature.icon} />
@@ -543,11 +562,11 @@ const Admin = () => {
               </Card>
             ))}
 
-            {/* Add [+] Button */}
+            {/* Add Button */}
             <Button
               onClick={addBulkFeatureRow}
               variant="outline"
-              className="w-full h-12 border-dashed border-2 hover:border-primary"
+              className="w-full h-12 border-dashed border-2 border-[#C9A227]/50 text-[#C9A227] hover:bg-[#C9A227]/10 hover:border-[#C9A227]"
             >
               <Plus className="w-5 h-5 mr-2" /> Add Feature
             </Button>
@@ -555,57 +574,60 @@ const Admin = () => {
 
           {/* Summary Section */}
           {bulkFeatures.length > 0 && (
-            <Card className="mt-6 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+            <Card className="mt-8 bg-gradient-to-br from-[#C9A227]/10 to-transparent border-[#C9A227]/30">
               <CardContent className="p-6">
-                <h3 className="font-semibold text-blue-900 mb-4 flex items-center gap-2">
+                <h3 className="font-semibold text-[#C9A227] mb-4 flex items-center gap-2">
                   <Calculator className="w-5 h-5" /> Summary
                 </h3>
                 
                 <div className="grid md:grid-cols-2 gap-6">
-                  {/* Total Price - Calculated */}
-                  <div>
-                    <Label className="text-xs font-semibold text-blue-700 mb-1.5 block">
-                      4. Total Price (Auto-calculated)
+                  {/* Total Price */}
+                  <div className="bg-black/30 rounded-lg p-4 border border-white/10">
+                    <Label className="text-xs font-medium text-white/60 mb-1.5 block">
+                      Total Price (Auto-calculated)
                     </Label>
-                    <div className="bg-white rounded-lg p-3 border border-blue-200">
-                      <p className="text-2xl font-bold text-blue-600">
-                        ₹{totalPrice.toLocaleString()}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Sum of all feature prices
-                      </p>
-                    </div>
+                    <p className="text-3xl font-bold text-[#C9A227]">
+                      ₹{totalPrice.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-white/40 mt-1">
+                      Sum of all feature prices
+                    </p>
                   </div>
 
                   {/* Duration */}
-                  <div>
-                    <Label className="text-xs font-semibold text-blue-700 mb-1.5 block">
-                      5. Duration (Days)
+                  <div className="bg-black/30 rounded-lg p-4 border border-white/10">
+                    <Label className="text-xs font-medium text-white/60 mb-1.5 block">
+                      Duration (Days)
                     </Label>
                     <Input
                       type="number"
                       value={totalDuration}
                       onChange={(e) => {
                         const val = parseInt(e.target.value) || 0;
-                        // Update days on the first feature (or distribute)
                         if (bulkFeatures.length > 0) {
                           updateBulkFeature(0, "days", val);
                         }
                       }}
-                      className="h-12 text-lg bg-white"
+                      className="h-12 text-xl font-bold bg-white/5 border-white/10 text-white focus:border-[#C9A227]/50"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Total project duration in days
+                    <p className="text-xs text-white/40 mt-1">
+                      Total project duration
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-blue-200">
-                  <p className="text-sm text-blue-800">
-                    <strong>{bulkFeatures.length}</strong> features | 
-                    Total: <strong>₹{totalPrice.toLocaleString()}</strong> | 
-                    Duration: <strong>{totalDuration} days</strong>
-                  </p>
+                <div className="mt-6 pt-4 border-t border-white/10">
+                  <div className="flex items-center gap-6 text-sm">
+                    <span className="text-white/60">
+                      <strong className="text-white">{bulkFeatures.length}</strong> features
+                    </span>
+                    <span className="text-white/60">
+                      Total: <strong className="text-[#C9A227]">₹{totalPrice.toLocaleString()}</strong>
+                    </span>
+                    <span className="text-white/60">
+                      Duration: <strong className="text-[#C9A227]">{totalDuration} days</strong>
+                    </span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -616,26 +638,29 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black">
       {/* Header */}
-      <header className="gradient-hero py-6 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-1.5 text-primary-foreground/60 hover:text-primary-foreground text-xs font-medium mb-3 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
-          </button>
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b-2 border-[#C9A227]">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl md:text-2xl font-extrabold text-primary-foreground tracking-tight">
-                Admin Dashboard
-              </h1>
-              <p className="text-primary-foreground/60 text-xs md:text-sm">
-                Manage categories and features
-              </p>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-1.5 text-white/60 hover:text-[#C9A227] text-xs transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" /> Home
+              </button>
+              <div className="h-6 w-px bg-white/20" />
+              <img 
+                src="https://fore-fight-era.vercel.app/assets/3-Bsr_pCU3.png" 
+                alt="Fore Fight Era" 
+                className="h-8 w-auto object-contain"
+              />
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3">
+              <span className="text-white/40 text-sm hidden md:block">
+                {categories.length} Categories
+              </span>
               <Button
                 onClick={() => {
                   setIsEditMode(false);
@@ -643,32 +668,48 @@ const Admin = () => {
                   setCategoryForm({ name: "", icon: "", description: "", color: "from-blue-600 to-cyan-500" });
                   setIsCategoryDialogOpen(true);
                 }}
-                className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                className="bg-[#C9A227] text-black hover:bg-[#B8921F] font-semibold text-sm"
+                size="sm"
               >
-                <Plus className="w-4 h-4 mr-2" /> Add Category
+                <Plus className="w-4 h-4 mr-1.5" /> Add Category
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 md:px-8 py-6">
+      {/* Main Content */}
+      <main className="pt-20 pb-12 px-4 md:px-8 max-w-7xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">Admin Panel</h1>
+          <p className="text-white/50">Manage categories and features for your cost estimator</p>
+        </div>
+
         {categories.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-muted-foreground mb-4">No categories found</p>
-            <p className="text-sm text-muted-foreground">Add a category to get started</p>
+          <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-12 text-center">
+            <div className="w-16 h-16 bg-[#C9A227]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Database className="w-8 h-8 text-[#C9A227]" />
+            </div>
+            <h3 className="text-xl font-semibold text-white mb-2">No categories yet</h3>
+            <p className="text-white/50 mb-6">Start by adding your first project category</p>
+            <Button
+              onClick={() => setIsCategoryDialogOpen(true)}
+              className="bg-[#C9A227] text-black hover:bg-[#B8921F]"
+            >
+              <Plus className="w-4 h-4 mr-2" /> Add First Category
+            </Button>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categories.map((category) => (
-              <Card key={category.id} className="overflow-hidden">
-                <CardHeader className={`bg-gradient-to-r ${category.color} text-white`}>
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {categories.map((category, index) => (
+              <Card key={category.id} className="group overflow-hidden bg-gradient-to-br from-white/10 to-white/5 border-white/10 hover:border-[#C9A227]/50 transition-all duration-300">
+                <CardHeader className="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">{category.icon}</span>
+                      <span className="text-3xl group-hover:scale-110 transition-transform">{category.icon}</span>
                       <div>
-                        <CardTitle className="text-white text-lg">{category.name}</CardTitle>
-                        <p className="text-white/70 text-xs mt-0.5">
+                        <CardTitle className="text-white text-base font-semibold">{category.name}</CardTitle>
+                        <p className="text-white/50 text-xs mt-0.5">
                           {category.sections.reduce((acc, s) => acc + s.features.length, 0)} features
                         </p>
                       </div>
@@ -678,87 +719,92 @@ const Admin = () => {
                         size="icon"
                         variant="ghost"
                         onClick={() => handlePrintCategory(category)}
-                        className="h-8 w-8 text-white hover:bg-white/20"
-                        title="Print Category"
+                        className="h-7 w-7 text-white/70 hover:text-white hover:bg-white/10"
                       >
-                        <Printer className="w-4 h-4" />
+                        <Printer className="w-3.5 h-3.5" />
                       </Button>
                       <Button
                         size="icon"
                         variant="ghost"
                         onClick={() => openEditCategory(category)}
-                        className="h-8 w-8 text-white hover:bg-white/20"
+                        className="h-7 w-7 text-white/70 hover:text-white hover:bg-white/10"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Edit className="w-3.5 h-3.5" />
                       </Button>
                       <Button
                         size="icon"
                         variant="ghost"
                         onClick={() => handleDeleteCategory(category.id)}
-                        className="h-8 w-8 text-white hover:bg-white/20"
+                        className="h-7 w-7 text-white/70 hover:text-red-400 hover:bg-red-500/10"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
-                  <p className="text-sm text-muted-foreground mb-4">{category.description}</p>
+                <CardContent className="p-4 bg-gradient-to-b from-transparent to-white/5">
+                  <p className="text-sm text-white/60 mb-4 line-clamp-2">{category.description}</p>
                   
-                  <Accordion type="single" collapsible className="w-full">
-                    {category.sections.map((section, idx) => (
-                      <AccordionItem key={idx} value={`section-${idx}`}>
-                        <AccordionTrigger className="text-xs font-semibold py-2">
-                          {section.title} ({section.features.length})
-                        </AccordionTrigger>
-                        <AccordionContent>
-                          <ScrollArea className="h-40">
-                            <div className="space-y-2">
-                              {section.features.map((feature) => (
-                                <div
-                                  key={feature.id}
-                                  className="flex items-center justify-between p-2 bg-muted rounded-lg"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <span>{feature.icon}</span>
-                                    <div>
-                                      <p className="text-sm font-medium">{feature.name}</p>
-                                      <p className="text-xs text-muted-foreground">
-                                        Price: ₹{feature.price.toLocaleString()} | Total: ₹{feature.totalCost.toLocaleString()} | {feature.days} days
-                                      </p>
+                  {category.sections.reduce((acc, s) => acc + s.features.length, 0) > 0 ? (
+                    <Accordion type="single" collapsible className="w-full">
+                      {category.sections.map((section, idx) => (
+                        <AccordionItem key={idx} value={`section-${idx}`} className="border-white/10">
+                          <AccordionTrigger className="text-xs font-medium py-2 text-white/70 hover:text-white">
+                            {section.title} ({section.features.length})
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <ScrollArea className="h-48">
+                              <div className="space-y-2">
+                                {section.features.map((feature) => (
+                                  <div
+                                    key={feature.id}
+                                    className="flex items-center justify-between p-2.5 bg-white/5 rounded-lg border border-white/5 hover:border-[#C9A227]/30 transition-colors"
+                                  >
+                                    <div className="flex items-center gap-2.5">
+                                      <span className="text-lg">{feature.icon}</span>
+                                      <div>
+                                        <p className="text-sm font-medium text-white">{feature.name}</p>
+                                        <p className="text-xs text-white/40">
+                                          ₹{feature.price.toLocaleString()} • {feature.days} days
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex gap-1">
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => openEditFeature(category, feature)}
+                                        className="h-7 w-7 text-white/50 hover:text-[#C9A227] hover:bg-[#C9A227]/10"
+                                      >
+                                        <Edit className="w-3.5 h-3.5" />
+                                      </Button>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => handleDeleteFeature(category.id, feature.id)}
+                                        className="h-7 w-7 text-white/50 hover:text-red-400 hover:bg-red-500/10"
+                                      >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                      </Button>
                                     </div>
                                   </div>
-                                  <div className="flex gap-1">
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      onClick={() => openEditFeature(category, feature)}
-                                      className="h-7 w-7"
-                                    >
-                                      <Edit className="w-3.5 h-3.5" />
-                                    </Button>
-                                    <Button
-                                      size="icon"
-                                      variant="ghost"
-                                      onClick={() => handleDeleteFeature(category.id, feature.id)}
-                                      className="h-7 w-7 text-destructive hover:text-destructive"
-                                    >
-                                      <Trash2 className="w-3.5 h-3.5" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </ScrollArea>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
+                                ))}
+                              </div>
+                            </ScrollArea>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  ) : (
+                    <div className="bg-white/5 rounded-lg p-4 text-center border border-white/10 border-dashed">
+                      <p className="text-white/40 text-sm">No features added yet</p>
+                    </div>
+                  )}
 
                   <Button
                     onClick={() => openBulkAddFeatures(category)}
                     variant="outline"
-                    className="w-full mt-4"
+                    className="w-full mt-4 border-[#C9A227]/50 text-[#C9A227] hover:bg-[#C9A227]/10 hover:text-[#C9A227]"
                   >
                     <Plus className="w-4 h-4 mr-2" /> Add Features
                   </Button>

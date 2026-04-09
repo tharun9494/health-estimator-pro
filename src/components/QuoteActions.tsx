@@ -15,8 +15,8 @@ const fmt = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 
 const buildSummary = (selected: Set<string>, margin: number, client: ClientInfo, categoryName: string, allFeatures: Feature[]) => {
   const items = allFeatures.filter((f) => selected.has(f.id));
-  const minBase = items.reduce((s, f) => s + f.minPrice, 0);
-  const maxBase = items.reduce((s, f) => s + f.maxPrice, 0);
+  const minBase = items.reduce((s, f) => s + f.price, 0);
+  const maxBase = items.reduce((s, f) => s + f.totalCost, 0);
   const days = Math.max(15, items.reduce((s, f) => s + f.days, 0));
   const minTotal = minBase * (1 + margin / 100);
   const maxTotal = maxBase * (1 + margin / 100);
@@ -26,7 +26,7 @@ const buildSummary = (selected: Set<string>, margin: number, client: ClientInfo,
   if (client.business) text += `*Business:* ${client.business}\n`;
   if (client.phone) text += `*Phone:* ${client.phone}\n`;
   text += `\n*Selected Features:*\n`;
-  items.forEach((f) => { text += `✅ ${f.name} (${fmt(f.minPrice)}–${fmt(f.maxPrice)})\n`; });
+  items.forEach((f) => { text += `✅ ${f.name} (${fmt(f.price)}–${fmt(f.totalCost)})\n`; });
   text += `\n*Base Cost:* ${fmt(minBase)} – ${fmt(maxBase)}`;
   text += `\n*Safety Margin (${margin}%):* ${fmt(minBase * margin / 100)} – ${fmt(maxBase * margin / 100)}`;
   text += `\n\n💰 *Estimated Total: ${fmt(minTotal)} – ${fmt(maxTotal)}*`;

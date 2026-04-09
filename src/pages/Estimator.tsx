@@ -1,22 +1,43 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getCategoryById, getAllFeatures } from "@/data/categories";
+import { getCategoryById } from "@/lib/firestoreService";
+import { BusinessCategory, Feature } from "@/data/categories";
 import FeaturePanel from "@/components/FeaturePanel";
 import PriceCalculator from "@/components/PriceCalculator";
 import ClientForm, { ClientInfo } from "@/components/ClientForm";
 import QuoteActions from "@/components/QuoteActions";
 import { Slider } from "@/components/ui/slider";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const getAllFeatures = (category: BusinessCategory): Feature[] =>
+  category.sections.flatMap((s) => s.features);
 
 const Estimator = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
-  const category = getCategoryById(categoryId || "");
+  const [category, setCategory] = useState<BusinessCategory | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [margin, setMargin] = useState(15);
   const [client, setClient] = useState<ClientInfo>({ name: "", phone: "", business: "" });
+
+  useEffect(() => {
+    const loadCategory = async () => {
+      if (!categoryId) return;
+      try {
+        setLoading(true);
+        const data = await getCategoryById(categoryId);
+        setCategory(data);
+      } catch (error) {
+        console.error("Error loading category:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCategory();
+  }, [categoryId]);
 
   const handleToggle = useCallback((id: string) => {
     setSelected((prev) => {
@@ -25,6 +46,14 @@ const Estimator = () => {
       return next;
     });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   if (!category) {
     return (

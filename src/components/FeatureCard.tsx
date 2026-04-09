@@ -25,7 +25,7 @@ const FeatureCard = ({ feature, selected, onToggle }: FeatureCardProps) => (
           <h3 className="font-semibold text-sm text-foreground truncate">{feature.name}</h3>
           <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{feature.description}</p>
           <p className="text-xs font-medium text-primary mt-1">
-            ₹{feature.minPrice.toLocaleString("en-IN")} – ₹{feature.maxPrice.toLocaleString("en-IN")}
+            ₹{feature.price.toLocaleString("en-IN")} – ₹{feature.totalCost.toLocaleString("en-IN")}
           </p>
         </div>
       </div>

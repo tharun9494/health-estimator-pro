@@ -12,8 +12,8 @@ const fmt = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 
 const PriceCalculator = ({ selected, margin, allFeatures }: PriceCalculatorProps) => {
   const items = allFeatures.filter((f) => selected.has(f.id));
-  const minBase = items.reduce((s, f) => s + f.minPrice, 0);
-  const maxBase = items.reduce((s, f) => s + f.maxPrice, 0);
+  const minBase = items.reduce((s, f) => s + f.price, 0);
+  const maxBase = items.reduce((s, f) => s + f.totalCost, 0);
   const days = Math.max(15, items.reduce((s, f) => s + f.days, 0));
   const complexity = Math.min(100, Math.round((items.length / allFeatures.length) * 100));
 

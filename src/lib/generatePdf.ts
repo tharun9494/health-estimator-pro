@@ -13,8 +13,8 @@ export function generateQuotePdf(
   allFeatures: Feature[]
 ) {
   const items = allFeatures.filter((f) => selected.has(f.id));
-  const minBase = items.reduce((s, f) => s + f.minPrice, 0);
-  const maxBase = items.reduce((s, f) => s + f.maxPrice, 0);
+  const minBase = items.reduce((s, f) => s + f.price, 0);
+  const maxBase = items.reduce((s, f) => s + f.totalCost, 0);
   const days = Math.max(15, items.reduce((s, f) => s + f.days, 0));
   const minMargin = minBase * (margin / 100);
   const maxMargin = maxBase * (margin / 100);
@@ -72,14 +72,14 @@ export function generateQuotePdf(
     (i + 1).toString(),
     f.name,
     f.description.length > 50 ? f.description.slice(0, 47) + "..." : f.description,
-    fmt(f.minPrice),
-    fmt(f.maxPrice),
+    fmt(f.price),
+    fmt(f.totalCost),
     `${f.days} days`,
   ]);
 
   autoTable(doc, {
     startY: y,
-    head: [["#", "Feature", "Description", "Min Price", "Max Price", "Timeline"]],
+    head: [["#", "Feature", "Description", "Price", "Total Cost", "Timeline"]],
     body: tableBody,
     margin: { left: 14, right: 14 },
     headStyles: {
